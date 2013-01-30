@@ -224,3 +224,112 @@ div.content-sidebar {
         text-decoration: none;
     }
 }
+
+.page-template-templates_setfive_homepage-php {
+    .page-header {
+        display: none;
+    }
+    
+    .top-row {
+        margin-bottom: 30px;
+    }
+    
+    .bottom-row {
+        margin-bottom: 30px;
+    }
+    
+    .metro-tile {           
+        border-radius: 2px;
+        color: #fff;
+        padding: 10px;
+        margin-bottom: 10px;
+        position: relative;
+        cursor: hand;
+        cursor: pointer;
+        font-size: 20px;
+        line-height: 28px;
+        height: 90px;
+        
+        &:hover {
+            box-shadow: 0 1px 1px #bbb;
+            a {
+                text-decoration: underline;
+            }        
+        }
+        
+        a {
+            text-decoration: none;
+            color: #fff;
+        }        
+        
+        .tile-inner-image {
+            position: absolute;
+            left: 10px;
+            bottom: 10px;
+        }
+        
+        .tile-inner {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+        }
+    }    
+    
+    .metro-tile.green { background-color: @green; }
+    .metro-tile.purple { background-color: @purple; }
+    .metro-tile.red { background-color: @red; }
+    .metro-tile.orange { background-color: @orange; }
+    
+    .homepage-right {
+        .banner h3 {
+            margin: 0px;
+        }
+        
+        .quote-container {
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 103px;
+            font-size: 18px;
+            line-height: 32px;
+            .from {
+                text-align: right;
+                font-size: 14px;
+            }            
+        }
+        
+        .latest-posts {
+            padding: 10px;
+            margin-top: 10px;
+        }
+    }
+    
+    .contact-form {
+        padding-left: 10px;
+        padding-top: 15px;
+        
+        li {
+            padding-bottom: 10px;
+            font-size: 13px;
+        }
+        
+        li.tight {
+            padding-bottom: 2px;
+        }
+        
+        input[type="text"], textarea {
+            margin: 0px;
+        }
+        
+        textarea {
+            height: 150px;
+        }
+        
+        .shadowed-thumbnail {
+            padding: 2px;
+            border: 1px solid #333;
+            border-radius: 2px;
+            box-shadow: 0 0 1px #ccc;
+            max-width: 95%;            
+        }
+    }
+}
