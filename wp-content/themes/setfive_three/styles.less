@@ -1,0 +1,226 @@
+@import "utils.less";
+
+@font-face {
+    font-family: 'TitilliumText25L400wt';
+    src: url('titillium/TitilliumText25L003-webfont.eot');
+    src: url('titillium/TitilliumText25L003-webfont.eot?#iefix') format('embedded-opentype'),
+         url('titillium/TitilliumText25L003-webfont.woff') format('woff'),
+         url('titillium/TitilliumText25L003-webfont.ttf') format('truetype'),
+         url('titillium/TitilliumText25L003-webfont.svg#TitilliumText25L400wt') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    background-color: #222;
+    font-family: @body-font;
+}
+
+a {
+    color: @link-blue;
+}
+
+a:hover {
+    color: @link-hover;
+}
+
+div.container-background {
+    background: url("grid_bg.png") center center;
+}
+
+h1, h2, h3, h4 {
+    font-family: @header-font;
+}
+
+div.header-body {
+    padding-bottom: 10px;
+    background-color: @dark-black;
+    margin: auto;
+    
+    .header-inner {
+        padding-top: 10px;
+        padding-left: 0px;
+        position: relative;
+    }
+    
+    .nav-container {
+        position: absolute;
+        right: 0px;
+        bottom: 0px;
+        
+        .main-nav {
+            font-family: @header-font;
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+            color: #fff;
+            padding: 0px;
+            margin: 0px;
+            text-transform: uppercase;
+            font-size: 16px;
+            
+            li {
+                display: inline-block;
+                padding-right: 18px;
+            }
+
+            a {
+                color: #fafafa;
+            }
+            
+            
+            a:hover {
+                /* color: #EA4C88; */
+                text-decoration: none;
+            }
+            
+        }
+    }
+}
+
+div.homepage-blue-bg {
+    background: url("boston_bg.jpg") repeat-x center center;
+    border-bottom: 1px solid #333;
+    border-top: 1px solid #333;
+    background-size: cover;
+    
+    .homepage-banner {
+        padding-top: 60px;
+        padding-bottom: 80px;
+    }
+    
+    .banner-text {
+        font-size: 38px;
+        font-weight: bold;
+        line-height: 55px;
+        color: #222;
+        background-color: rgba(255, 255, 255, 0.7);
+        padding: 10px;
+        
+        em {
+            color: @link-blue;
+            font-style: normal;
+        }
+    }
+}
+
+div.content-container {
+    padding: 20px;
+    margin-bottom: 15px;
+    margin-top: 5px;
+    background-color: @content-bg;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.5);
+    margin-top: -30px;
+    
+    #page {
+        padding: 0px;
+        margin: 0px;
+        background-color: transparent;
+        
+        .page-header {
+            margin: 0 0 10px;
+            padding-bottom: 20px;
+            border-color: #C2C2C2;
+        }
+        
+        .type-page {
+            .page-header {
+                margin: 0px 0px 8px;
+                padding-bottom: 8px;
+            }
+            h1 {
+                margin-bottom: 0px;
+            }
+        }
+    }
+    
+    h1.entry-title {
+        font-size: 32px;
+        margin-top: 0px;
+    }
+    
+    .entry-content h3 {
+        font-size: 18px;
+        line-height: 20px;
+        background-color: @link-blue;
+        padding: 10px;
+        color: #fff;
+        margin-top: 25px;
+        margin-bottom: 5px;       
+    }
+    
+    p {
+        line-height: 26px;
+    }
+}
+
+div.content-sidebar {
+    .section {
+        padding-top: 10px;
+        
+        h4 {
+            background-color: @sidebar-off;
+            padding: 10px;
+            a {
+                color: #fafafa;
+            }
+        }
+    }    
+}
+
+
+
+.widget-area {
+
+    .search-query {
+        width: auto;
+    }
+    
+    .widget-title {
+        font-size: 18px;
+        line-height: 24px;
+        color: @content-bg;
+        background-color: @link-hover;
+        padding: 10px;
+        margin: -10px -10px 10px;
+        border-radius: 5px 5px 0 0;
+    }
+    
+    .widget {
+        margin-top: 40px;
+        margin-bottom: 40px;
+        padding: 10px;
+        background-color: #F2F2F2;
+        border-radius: 5px;
+        border: 1px solid #D4D4D4;
+    }
+    
+    .widget:first-child {
+        margin-top: 0px;
+    }
+}
+
+.homepage-footer {
+    background-color: #222;
+    padding: 25px;
+    border-top: 1px solid #0A204A;
+    margin-top: 40px;
+    
+    .no-bs {
+        color: #0088CC;
+        font-size: 22px;
+        font-weight: bold;
+    }
+    
+    .footer-text {
+        color: #fafafa;
+        font-size: 16px;
+        text-align: right;
+    }
+    
+    a {
+        color: #FAFAFA;
+    }
+    
+    a:hover {
+        text-decoration: none;
+    }
+}
