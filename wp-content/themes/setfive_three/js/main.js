@@ -17,7 +17,7 @@ jQuery(document).ready(function($){
    
    function enableSidebarScrollspy(){
    
-	   var sidebarZeroColor = jQuery.Color( jQuery(".content-sidebar h4:first").css("background-color") );
+	   var sidebarZeroColor = jQuery.Color( jQuery("div.content-sidebar h4:first").css("background-color") );
 	   var sidebarTargetColor = jQuery.Color( "#EA4C88" );
 	   
 	   var sidebarPosition = $(".entry-content .content-sidebar").position();
@@ -27,9 +27,9 @@ jQuery(document).ready(function($){
 	   $(".entry-content h3").each(function(){		   
 		   el = $(this).nextAll("*:first").length ? $(this).nextAll("*:first") : $(this);		   
 	       entryContentOffsets[ $(this).text() ] = el.position().top;
-	   });
+	   });	   
 	   
-	   jQuery(".content-sidebar h4 a").click(function(){       
+	   jQuery("div.content-sidebar h4 a").click(function(){       
 	       var pos = 0;
 	       
 	       if( jQuery(this).text() in entryContentOffsets ){
@@ -58,9 +58,9 @@ jQuery(document).ready(function($){
 	           
 	           jQuery("div.content-sidebar h4").each(function(){
 	               var pos = $(this).text() in entryContentOffsets ? entryContentOffsets[ $(this).text() ] : 0;
-	               var percent = (windowTop / pos) < 1 ? (windowTop / pos) : 1;               
+	               var percent = (windowTop / pos) < 1 ? (windowTop / pos) : 1;               	               
+	               var newBg = sidebarZeroColor.transition( sidebarTargetColor, percent );    	               
 	               
-	               var newBg = sidebarZeroColor.transition( sidebarTargetColor, percent );               
 	               $(this).animate( {"background-color": newBg.toHexString() } );
 	           });
 	       }
