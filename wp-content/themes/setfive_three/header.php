@@ -41,14 +41,14 @@
                     <div class="header-inner">
                         <div class="pull-left">
                             <div class="header-logo">
-                            	<img src="/wp-content/themes/setfive_three/logo_website_no_consulting.png">
+                            	<a href="/"><img src="/wp-content/themes/setfive_three/logo_website_no_consulting.png"></a>
                            	</div>
                         </div>                
                         <div class="nav-container">
                             <ul class="listless main-nav">
-                                <li><a href="#">Home</a></li>
-                                <li><a href="#">What we do</a></li>
-                                <li><a href="#">Team</a></li>
+                                <li><a href="/">Home</a></li>
+                                <li><a href="/what-we-do/">What we do</a></li>
+                                <li><a href="#">About Us</a></li>
                                 <li><a href="#">Our Stack</a></li>
                                 <li><a href="#">Case Studies</a></li>
                                 <li><a href="#">Contact</a></li>

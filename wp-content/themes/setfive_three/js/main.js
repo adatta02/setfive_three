@@ -10,6 +10,11 @@ jQuery(document).ready(function($){
        $(this).animate({color: $(this).data("color")}, 150);
    });   
    
+   $(".metro-tile").click(function(){
+	   window.location = $(this).find("a:first").attr("href");
+	   return false;
+   });
+   
    function enableSidebarScrollspy(){
    
 	   var sidebarZeroColor = jQuery.Color( jQuery(".content-sidebar h4:first").css("background-color") );
@@ -17,9 +22,11 @@ jQuery(document).ready(function($){
 	   
 	   var sidebarPosition = $(".entry-content .content-sidebar").position();
 	   var entryContentOffsets = { };   
+	   var el;
 	   
-	   $(".entry-content h3").each(function(){
-	       entryContentOffsets[ $(this).text() ] = $(this).nextAll("p:first").position().top;
+	   $(".entry-content h3").each(function(){		   
+		   el = $(this).nextAll("*:first").length ? $(this).nextAll("*:first") : $(this);		   
+	       entryContentOffsets[ $(this).text() ] = el.position().top;
 	   });
 	   
 	   jQuery(".content-sidebar h4 a").click(function(){       
@@ -29,7 +36,8 @@ jQuery(document).ready(function($){
 	           pos = jQuery(".entry-content h3:contains(" + jQuery(this).text() + ")").position().top;
 	       }
 	       
-	       jQuery(window).scrollTop( pos ).scroll();
+	       jQuery(window).scrollTop( pos + 1 ).scroll();
+	       	       
 	       return false;
 	   });
 	   
@@ -37,18 +45,18 @@ jQuery(document).ready(function($){
 	       
 	       var scrollSidebar = function(){
 	           
-	           var windowTop = jQuery(window).scrollTop();
-	           var diff;
+	           var windowTop = jQuery(window).scrollTop() > 0 ? jQuery(window).scrollTop() : 1;
+	           var diff = 0;
 	           
 	           if( jQuery(".entry-content .content-sidebar").position().top - sidebarPosition.top < windowTop ){
 	               diff = jQuery(window).scrollTop() - jQuery(".entry-content .content-sidebar").position().top;               
-	           }else{
-	               diff = 0;
 	           }
 	           
-	           jQuery(".entry-content .content-sidebar").animate({"padding-top": diff}, 150);
+	           diff = diff > 0 ? diff : 0;
 	           
-	           jQuery(".content-sidebar h4").each(function(){
+	           jQuery(".entry-content .content-sidebar").animate({"padding-top": diff}, 150);	           
+	           
+	           jQuery("div.content-sidebar h4").each(function(){
 	               var pos = $(this).text() in entryContentOffsets ? entryContentOffsets[ $(this).text() ] : 0;
 	               var percent = (windowTop / pos) < 1 ? (windowTop / pos) : 1;               
 	               
