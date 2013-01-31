@@ -48,9 +48,8 @@
                             <ul class="listless main-nav">
                                 <li><a href="/">Home</a></li>
                                 <li><a href="/what-we-do/">What we do</a></li>
-                                <li><a href="#">About Us</a></li>
-                                <li><a href="#">Our Stack</a></li>
-                                <li><a href="#">Case Studies</a></li>
+                                <li><a href="/about-us/">About Us</a></li>
+                                <li><a href="/work/">Work</a></li>
                                 <li><a href="#">Contact</a></li>
                                 <li><a href="#">Blog</a></li>
                             </ul>
@@ -66,13 +65,18 @@
                 <div class="homepage-banner">
                     <div class="container">
                         <div class="row">
-                        	<?php if( !array_key_exists("headerFn", $GLOBALS) ): ?>
 	                            <div class="span7">                            	
-	                                <div class="banner-text">We build the <em>tools</em> that help power your <em>business</em>.</div>
+	                                <div class="banner-text">	                                
+		                        	<?php 
+		                        	global $post;                        	                        
+		                        	if (get_post_meta($post->ID, 'header_banner', null)) {
+		                        		echo array_pop(get_post_meta($post->ID, 'header_banner', null));
+		                        	}else{
+		                        	?>	                                	                                
+	                                	We build the <em>tools</em> that help power your <em>business</em>.
+	                               	<?php } ?>
+	                                </div>
 	                            </div>
-	                        <?php else: ?>
-	                        	<?php $GLOBALS["headerFn"](); ?>
-	                        <?php endif; ?>
                         </div>
                     </div>
                 </div>
