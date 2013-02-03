@@ -28,6 +28,31 @@ jQuery(document).ready(function($){
 	   return false;
    });
    
+   $("[data-provide='contact-form']").submit(function(){
+	   
+	  var isError = false;
+	  $.each($(this).find("input:text, textarea"), function(){
+		 if( $(this).val().length == 0 ){
+			 isError = true;
+			 $(this).css("border", "1px solid red");
+		 }else{
+			 $(this).css("border", "");
+		 }
+	  });
+	  
+	  if( isError ){
+		  return false;
+	  }
+	  
+	  $(this).find("[name='contact[is_human]']").val("0xDEADBEEF");
+	  $.post( $(this).attr("action"), $(this).serialize() );
+	  
+	  var dialog = $(this).find("[data-provide='contact-success']");
+	  dialog.slideDown();	  
+	  window.setTimeout(function(){dialog.slideUp();}, 4000);	  
+	  return false;
+   });
+   
    function enableSidebarScrollspy(){
    
 	   var sidebarZeroColor = jQuery.Color( jQuery("div.content-sidebar h4:first").css("background-color") );
