@@ -15,6 +15,19 @@ jQuery(document).ready(function($){
 	   return false;
    });
    
+   $('#quote-carousel').bind("slid", function(e){
+	   $(".carousel-ticker img").attr("src", "/wp-content/themes/setfive_three/images/button-white.png");								
+	   var index = $('#quote-carousel .active').index('#quote-carousel .item');
+	   $(".carousel-ticker img:eq(" + index + ")").attr("src", "/wp-content/themes/setfive_three/images/button-blue.png");		
+   });
+
+   $(".carousel-ticker a").click(function(){
+	   $(".carousel-ticker img").attr("src", "/wp-content/themes/setfive_three/images/button-white.png");
+	   var index = $(this).index(".carousel-ticker a");
+	   $('#quote-carousel').carousel(index);
+	   return false;
+   });
+   
    function enableSidebarScrollspy(){
    
 	   var sidebarZeroColor = jQuery.Color( jQuery("div.content-sidebar h4:first").css("background-color") );

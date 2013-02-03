@@ -50,8 +50,8 @@
                                 <li><a href="/what-we-do/">What we do</a></li>
                                 <li><a href="/about-us/">About Us</a></li>
                                 <li><a href="/work/">Work</a></li>
-                                <li><a href="#">Contact</a></li>
-                                <li><a href="#">Blog</a></li>
+                                <li><a href="/contact-us/">Contact</a></li>
+                                <li><a href="http://shout.setfive.com">Blog</a></li>
                             </ul>
                         </div>                        
                         <div class="clearfix"></div>                        
