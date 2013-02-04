@@ -29,6 +29,24 @@
 		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/main.js"></script>
 		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/jquery.color.js"></script>
 		
+		<style>
+		
+@media only screen and (max-width: 767px) {
+        
+    .header-inner .pull-left  {
+        float: none !important;
+        text-align: center;
+    }
+    
+    .nav-container {
+        position: relative !important;
+        text-align: center;
+    }    
+    
+}
+		
+		</style>
+		
 	</head>
 	
 	<body <?php body_class(); ?>>

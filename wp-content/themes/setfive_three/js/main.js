@@ -108,7 +108,7 @@ jQuery(document).ready(function($){
 	       }
 	       
 	       window.sidebarTimeout = window.setTimeout( scrollSidebar, 200 );       
-	   });
+	   }).scroll();
 	   
    }
    
