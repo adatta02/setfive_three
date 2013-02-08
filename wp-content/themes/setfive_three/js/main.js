@@ -1,5 +1,5 @@
 jQuery(document).ready(function($){
-   
+      
    $(".main-nav a, .footer-text a").each(function(){
        $(this).data("color", $(this).css("color"));
    });

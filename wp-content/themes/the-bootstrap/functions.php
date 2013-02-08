@@ -237,7 +237,7 @@ function the_bootstrap_register_scripts_styles() {
 			$theme_version,
 			true
 		);
-				
+			
 		/**
 		 * Styles
 		 */

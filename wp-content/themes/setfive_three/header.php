@@ -18,34 +18,17 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		
 		<title><?php wp_title( '&laquo;', true, 'right' ); ?></title>
-		
+				
 		<?php tha_head_bottom(); ?>
 		<?php wp_head(); ?>
 		
 		<link href="/wp-content/themes/setfive_three/styles.less" rel="stylesheet/less" type="text/css">	
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-					
+        <link href='/wp-content/themes/setfive_three/responsive.css' rel='stylesheet' type='text/css'>
+        
 		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/less-1.3.3.min.js"></script>
 		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/main.js"></script>
 		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/jquery.color.js"></script>
-		
-		<style>
-		
-@media only screen and (max-width: 767px) {
-        
-    .header-inner .pull-left  {
-        float: none !important;
-        text-align: center;
-    }
-    
-    .nav-container {
-        position: relative !important;
-        text-align: center;
-    }    
-    
-}
-		
-		</style>
 		
 	</head>
 	

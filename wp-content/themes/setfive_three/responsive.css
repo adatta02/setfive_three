@@ -1,0 +1,17 @@
+@media only screen and (max-width: 767px) {
+        
+    .header-logo{
+        padding-bottom: 10px;
+    }
+        
+    .header-inner .pull-left  {
+        float: none !important;
+        text-align: center;
+    }
+    
+    .nav-container {
+        position: relative !important;
+        text-align: center;
+    }    
+    
+}
