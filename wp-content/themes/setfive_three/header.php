@@ -17,6 +17,12 @@
 		<meta charset="<?php bloginfo( 'charset' ); ?>" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		
+		<?php if( SITE_NAME == "setfive" ): ?>
+  			<meta name="keywords" content="symfony, Boston, consulting, php, javascript, Drupal" />
+  			<meta name="description" content="Setfive Consulting specializing in developing tools to help power your business. We're a Boston based team that solves problems, ships code, and has a great time doing both." />
+  			<meta name="author" content="Setfive Consulting LLC">
+		<?php endif; ?>
+		
 		<title><?php wp_title( '&laquo;', true, 'right' ); ?></title>
 				
 		<?php tha_head_bottom(); ?>
