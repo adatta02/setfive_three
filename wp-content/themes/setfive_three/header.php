@@ -51,6 +51,7 @@
                                 <li><a href="/what-we-do/">What we do</a></li>
                                 <li><a href="/about-us/">About Us</a></li>
                                 <li><a href="/work/">Work</a></li>
+                                <li><a href="/careers/">Careers</a></li>
                                 <li><a href="/contact-us/">Contact</a></li>
                                 <li><a href="http://shout.setfive.com">Blog</a></li>
                             </ul>
@@ -72,6 +73,8 @@
 		                        	global $post;                        	                        
 		                        	if (get_post_meta($post->ID, 'header_banner', null)) {
 		                        		echo array_pop(get_post_meta($post->ID, 'header_banner', null));
+		                        	}else if( $GLOBALS["header_banner"] ) {
+		                        		echo $GLOBALS["header_banner"];
 		                        	}else{
 		                        	?>	                                	                                
 	                                	We build the <em>tools</em> that help power your <em>business</em>.

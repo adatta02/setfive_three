@@ -116,4 +116,9 @@ jQuery(document).ready(function($){
 	   enableSidebarScrollspy();
    }
    
+   var hash = window.location.hash.replace("#", "");
+   if( hash.length ){
+	   $("a:contains(" + hash + ")").click();
+   }
+   
 });

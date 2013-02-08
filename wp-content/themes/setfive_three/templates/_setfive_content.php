@@ -5,14 +5,6 @@
  *
  */
 
-$GLOBALS["headerFn"] = function(){
-?>
-	<div class="span7">                            	
-		<div class="banner-text">We <em>build</em> it, <em>fix</em> it, and <em>remix</em> it.</div>
-	</div>
-<?php
-};
-
 get_header(); ?>
 
 <section id="primary" class="span12">

@@ -137,6 +137,11 @@ div.content-container {
         margin-top: 0px;
     }
     
+    h3 a {
+        color: #fff;
+        text-decoration: underline;
+    }    
+    
     .entry-content h3 {
         font-size: 18px;
         line-height: 20px;
@@ -162,6 +167,21 @@ div.content-container {
     
     .case-studies li {
         padding-bottom: 10px;
+    }
+    
+    .blogroll {
+        ul {
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px dotted #CFCFCF;
+        }
+        ul:last-child {
+            border-bottom: none;
+        }        
+        .title_link {
+            font-size: 16px;
+            line-height: 24px;
+        }
     }
     
 }
@@ -291,7 +311,7 @@ div.content-sidebar {
     .metro-tile.purple { background-color: @purple; }
     .metro-tile.red { background-color: @red; }
     .metro-tile.orange { background-color: @orange; }
-    
+        
     .homepage-right {
         .banner h3 {
             margin: 0px;
@@ -345,21 +365,6 @@ div.content-sidebar {
         }       
     }
     
-    .blogroll {
-        ul {
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-            border-bottom: 1px dotted #CFCFCF;
-        }
-        ul:last-child {
-            border-bottom: none;
-        }        
-        .title_link {
-            font-size: 16px;
-            line-height: 24px;
-        }
-    }
-    
 }
 
 .executive-team-container {
@@ -399,4 +404,10 @@ textarea.contact-message {
         }        
    }
    
+}
+
+em.strike {
+    color: #0077B3;
+    font-style: normal;
+    text-decoration: line-through;     
 }
