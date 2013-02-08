@@ -53,7 +53,7 @@
                         </div>                
                         <div class="nav-container">
                             <ul class="listless main-nav">
-                                <li><a href="/">Home</a></li>
+                                <li><a href="http://www.setfive.com">Home</a></li>
                                 <li><a href="/what-we-do/">What we do</a></li>
                                 <li><a href="/about-us/">About Us</a></li>
                                 <li><a href="/work/">Work</a></li>
