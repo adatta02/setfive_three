@@ -2,22 +2,6 @@
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /
-
-RewriteRule ^.git - [F,L]
-RewriteCond %{HTTP_HOST} v3.setfive.com
-RewriteRule clients$ work [R=301,L]
-RewriteRule team$ about-us [R=301,L]
-RewriteRule contact$ contact-us [R=301,L]
-RewriteRule clients/datapoint-media$ work/datapoint-media [R=301,L]
-RewriteRule ventures/truly$ work/tru-ly [R=301,L]
-RewriteRule consulting$ what-we-do [R=301,L]
-RewriteRule consulting/startup$ what-we-do [R=301,L]
-RewriteRule consulting/web-application$ what-we-do [R=301,L]
-RewriteRule consulting/metatrader-4-integrations$ what-we-do [R=301,L]
-RewriteRule consulting/salesforce$ what-we-do [R=301,L]
-RewriteRule consulting/performance$ what-we-do [R=301,L]
-RewriteRule consulting/symfony$ what-we-do [R=301,L]
-
 RewriteRule ^index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

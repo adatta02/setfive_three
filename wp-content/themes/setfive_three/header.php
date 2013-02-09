@@ -27,12 +27,17 @@
 				
 		<?php tha_head_bottom(); ?>
 		<?php wp_head(); ?>
-		
-		<link href="/wp-content/themes/setfive_three/styles.less" rel="stylesheet/less" type="text/css">	
+			
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+        
+        <link href='/wp-content/themes/setfive_three/built_styles.css' rel='stylesheet' type='text/css'>
         <link href='/wp-content/themes/setfive_three/responsive.css' rel='stylesheet' type='text/css'>
         
-		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/less-1.3.3.min.js"></script>
+        <?php if( false ): ?>
+        	<link href="/wp-content/themes/setfive_three/styles.less" rel="stylesheet/less" type="text/css">
+			<script type="text/javascript" src="/wp-content/themes/setfive_three/js/less-1.3.3.min.js"></script>
+		<?php endif; ?>
+		
 		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/main.js"></script>
 		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/jquery.color.js"></script>
 		
