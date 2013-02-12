@@ -124,6 +124,16 @@ div.content-container #page .type-page .page-header {
 div.content-container #page .type-page h1 {
   margin-bottom: 0px;
 }
+div.content-container article.post {
+  margin-bottom: 40px;
+}
+div.content-container div.follow-us-bottom {
+  margin-bottom: 40px;
+}
+div.content-container div.follow-us-bottom iframe {
+  margin-left: 5px;
+  margin-bottom: -5px;
+}
 div.content-container h1.entry-title {
   font-size: 32px;
   margin-top: 0px;
