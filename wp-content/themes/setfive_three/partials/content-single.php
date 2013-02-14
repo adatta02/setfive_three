@@ -54,7 +54,9 @@ if ( get_the_author_meta( 'description' ) AND is_multi_author() ) : // If a user
 	</div><!-- #author-description -->
 	<div id="author-avatar" class="span3">
 		<div class="pull-right">
-			<?php echo get_avatar( get_the_author_meta( 'user_email' ), apply_filters( 'the_bootstrap_author_bio_avatar_size', 100 ) ); ?>
+			<a href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>" rel="author">
+				<?php echo get_avatar( get_the_author_meta( 'user_email' ), apply_filters( 'the_bootstrap_author_bio_avatar_size', 100 ) ); ?>
+			</a>
 		</div>
 	</div><!-- #author-avatar -->		
 </aside><!-- #author-info -->
