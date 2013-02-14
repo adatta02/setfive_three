@@ -39,30 +39,32 @@ tha_entry_before(); ?>
 	<?php tha_entry_bottom(); ?>
 </article><!-- #post-<?php the_ID(); ?> -->
 
-<div class="alert alert-info centered follow-us-bottom">
-	Enjoyed the post? We'd love it if you followed us on Twitter at 
-	<a href="https://twitter.com/setfive" class="twitter-follow-button" data-show-count="false">Follow @setfive</a>		 
-</div>
-
 <?php tha_entry_after();
 
-if ( false && get_the_author_meta( 'description' ) AND is_multi_author() ) : // If a user has filled out their description and this is a multi-author blog, show a bio on their entries ?>
-<aside id="author-info" class="row">
-	<h2 class="span8"><?php printf( __( 'About %s', 'the-bootstrap' ), get_the_author() ); ?></h2>
-	<div id="author-avatar" class="span1">
-		<?php echo get_avatar( get_the_author_meta( 'user_email' ), apply_filters( 'the_bootstrap_author_bio_avatar_size', 70 ) ); ?>
-	</div><!-- #author-avatar -->
-	<div id="author-description" class="span7">
-		<?php the_author_meta( 'description' ); ?>
+if ( get_the_author_meta( 'description' ) AND is_multi_author() ) : // If a user has filled out their description and this is a multi-author blog, show a bio on their entries ?>
+<aside id="author-info" class="row">	
+	<div id="author-description" class="span9">
+		<h3><?php printf( __( 'About %s', 'the-bootstrap' ), get_the_author() ); ?></h3>
+		<p><?php the_author_meta( 'description' ); ?></p>
 		<div id="author-link">
 			<a href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>" rel="author">
 				<?php printf( __( 'View all posts by %s <span class="meta-nav">&rarr;</span>', 'the-bootstrap' ), get_the_author() ); ?>
 			</a>
 		</div><!-- #author-link	-->
 	</div><!-- #author-description -->
+	<div id="author-avatar" class="span3">
+		<div class="pull-right">
+			<?php echo get_avatar( get_the_author_meta( 'user_email' ), apply_filters( 'the_bootstrap_author_bio_avatar_size', 100 ) ); ?>
+		</div>
+	</div><!-- #author-avatar -->		
 </aside><!-- #author-info -->
-<?php endif;
+<?php endif; ?>
 
+<div class="alert alert-info centered follow-us-bottom">
+	Enjoyed the post? We'd love it if you followed us on Twitter at 
+	<a href="https://twitter.com/setfive" class="twitter-follow-button" data-show-count="false">Follow @setfive</a>		 
+</div>
 
+<?php 
 /* End of file content-single.php */
 /* Location: ./wp-content/themes/the-bootstrap/partials/content-single.php */

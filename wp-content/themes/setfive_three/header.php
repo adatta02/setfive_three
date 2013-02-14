@@ -30,12 +30,13 @@
 			
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
         
-        <link href='/wp-content/themes/setfive_three/built_styles.css' rel='stylesheet' type='text/css'>
         <link href='/wp-content/themes/setfive_three/responsive.css' rel='stylesheet' type='text/css'>
         
-        <?php if( false ): ?>
+        <?php if( is_user_logged_in() ): ?>
         	<link href="/wp-content/themes/setfive_three/styles.less" rel="stylesheet/less" type="text/css">
 			<script type="text/javascript" src="/wp-content/themes/setfive_three/js/less-1.3.3.min.js"></script>
+		<?php else: ?>
+			<link href='/wp-content/themes/setfive_three/built_styles.css' rel='stylesheet' type='text/css'>	
 		<?php endif; ?>
 		
 		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/main.js"></script>
