@@ -1,5 +1,12 @@
 jQuery(document).ready(function($){
-      
+    
+   if( $(".leave-reply").length ){
+       $(".leave-reply").parents("a:first").click(function(){
+           $(window).scrollTop( $("#disqus_thread").offset().top );
+           return false;
+       });
+   }
+    
    $(".main-nav a, .footer-text a").each(function(){
        $(this).data("color", $(this).css("color"));
    });

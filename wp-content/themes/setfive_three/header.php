@@ -60,11 +60,11 @@
                         <div class="nav-container">
                             <ul class="listless main-nav">
                                 <li><a href="http://www.setfive.com">Home</a></li>
-                                <li><a href="/what-we-do/">What we do</a></li>
-                                <li><a href="/about-us/">About Us</a></li>
-                                <li><a href="/work/">Work</a></li>
-                                <li><a href="/careers/">Careers</a></li>
-                                <li><a href="/contact-us/">Contact</a></li>
+                                <li><a href="http://www.setfive.com/what-we-do/">What we do</a></li>
+                                <li><a href="http://www.setfive.com/about-us/">About Us</a></li>
+                                <li><a href="http://www.setfive.com/work/">Work</a></li>
+                                <li><a href="http://www.setfive.com/careers/">Careers</a></li>
+                                <li><a href="http://www.setfive.com/contact-us/">Contact</a></li>
                                 <li><a href="http://shout.setfive.com">Blog</a></li>
                             </ul>
                         </div>                        
