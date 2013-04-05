@@ -127,5 +127,12 @@ jQuery(document).ready(function($){
    if( hash.length ){
 	   $("a:contains(" + hash + ")").click();
    }
-   
+
+   $("a.thumbnail").click(function(){
+//       $("<div class='modal hide fade'><div class='modal-header'><button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button></div><div class='modal-body'><img src='"+$(this).attr('href')+"' /></div><div class='modal-footer'><a href='#' data-dismiss='modal' class='btn'>Close</a></div></div>").modal();
+      $("<div id='demoLightbox' class='lightbox hide fade'  tabindex='-1' role='dialog' aria-hidden='true'><div class='lightbox-header'><button type='button' class='close' data-dismiss='lightbox' aria-hidden='true'>&times;</button></div><div class='lightbox-content'><img src='"+$(this).attr('href')+"'></div></div>").lightbox();
+
+    return false;
+    
+  });
 });

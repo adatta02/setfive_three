@@ -38,10 +38,11 @@
 		<?php else: ?>
 			<link href='/wp-content/themes/setfive_three/built_styles.css' rel='stylesheet' type='text/css'>	
 		<?php endif; ?>
-		
+		<link href='/wp-content/themes/setfive_three/bootstrap-lightbox.min.css' rel='stylesheet' type='text/css'>  
 		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/main.js"></script>
 		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/jquery.color.js"></script>
-		
+		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/bootstrap-lightbox.js"></script>
+    
 	</head>
 	
 	<body <?php body_class(); ?>>
