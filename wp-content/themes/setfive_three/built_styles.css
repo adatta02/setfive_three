@@ -415,3 +415,17 @@ em.strike {
   padding-bottom: 5px;
   line-height: 26px;
 }
+.strong {
+  font-weight: bold;
+  line-height: 18px;
+}
+blockquote {
+  background-color: #fff;
+  padding: 5px 5px 5px 15px;
+  border-radius: 3px;
+}
+blockquote p {
+  font-size: 13px;
+  line-height: 24px;
+  color: #000;
+}
