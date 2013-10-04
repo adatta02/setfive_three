@@ -29,7 +29,7 @@
 		<?php wp_head(); ?>
 			
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-        
+<meta property="twitter:account_id" content="1494952732" />        
         <link href='/wp-content/themes/setfive_three/responsive.css' rel='stylesheet' type='text/css'>
         
         <?php if( is_user_logged_in() ): ?>
@@ -42,7 +42,7 @@
 		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/main.js"></script>
 		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/jquery.color.js"></script>
 		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/bootstrap-lightbox.js"></script>
-    
+    	<script type="text/javascript" src="/wp-content/themes/setfive_three/js/jquery-cookie.js"></script>
 	</head>
 	
 	<body <?php body_class(); ?>>
