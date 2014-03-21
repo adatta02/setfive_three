@@ -43,6 +43,13 @@
 		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/jquery.color.js"></script>
 		<script type="text/javascript" src="/wp-content/themes/setfive_three/js/bootstrap-lightbox.js"></script>
     	<script type="text/javascript" src="/wp-content/themes/setfive_three/js/jquery-cookie.js"></script>
+    	
+    	<style>
+		.homepage-blue-bg { 
+			background: url("/wp-content/themes/setfive_three/<?php echo rand(1, 5)?>.jpg") repeat-x center center;
+		}    	
+    	</style>
+    	
 	</head>
 	
 	<body <?php body_class(); ?>>
