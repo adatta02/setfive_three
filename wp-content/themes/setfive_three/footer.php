@@ -293,7 +293,9 @@
 </script>
 <!--End mc_embed_signup-->
    <script>
-   	   var success = false;	
+   	   var success = false;
+   	   var hasTriggered = false;
+   	   
        jQuery(document).ready(function($){
 
     	   $('#symfonyModal').bind('hide', function () {
@@ -309,17 +311,24 @@
 	        				c = $(window).height();
 	        				scrollPercent = (s / (d-c)) * 100;
 						
-						if( scrollPercent > 80 ){
+						if( scrollPercent > 80 && !hasTriggered ){
+							hasTriggered = true;
 							jQuery("#symfonyModal").modal();
+							$.cookie('viewed_box', '1', { expires: 7 });
 						}					
 					});					 
 				 }
        });
-    
-        var _gaq=[["_setAccount","<?php echo GA_ACCOUNT; ?>"],["_trackPageview"]]; 
-        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
-        g.src=("https:"==location.protocol?"//ssl":"//www")+".google-analytics.com/ga.js";
-        s.parentNode.insertBefore(g,s)}(document,"script"));        
+
+       var _gaq = _gaq || [];
+       _gaq.push(['_setAccount', '<?php echo GA_ACCOUNT; ?>']);
+       _gaq.push(['_trackPageview']);
+       (function() {
+       		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       		ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+       		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+       })();
+                     
     </script>
 	
 	<?php if( GA_ACCOUNT == "UA-3761258-7" ): ?>
