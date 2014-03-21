@@ -303,8 +303,8 @@
 		    		   $.cookie('viewed_box', '1', { expires: 7 });
 					}
         	   });
-
-				 if(jQuery.cookie('viewed_box') !== "1"){				 
+    	   
+				 if(window.location.href.indexOf("shout.setfive.com") > -1 && jQuery.cookie('viewed_box') !== "1"){				 
 					$(window).scroll(function(e){
 						var s = $(window).scrollTop(),
 	        				d = $(document).height(),
