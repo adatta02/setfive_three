@@ -41,6 +41,11 @@
                                 <a href="<?php the_permalink(); ?>" title="<?php echo esc_attr( sprintf( __( 'Permalink to %s', 'devdmbootstrap3' ), the_title_attribute( 'echo=0' ) ) ); ?>" rel="bookmark"><?php the_title(); ?></a>
                             </h2>
 
+                        		<div class="date-line">
+                        			Posted <?php the_time('F jS, Y'); ?>
+                        			by <?php the_author_posts_link(); ?>
+                        	 </div>                            
+                            
                             <?php if ( has_post_thumbnail() ) : ?>
                                <?php the_post_thumbnail(); ?>
                                 <div class="clear"></div>
@@ -53,7 +58,19 @@
                      <?php  endif; ?>
 
                 <?php endwhile; ?>
-                <?php posts_nav_link(); ?>
+                
+                	<div class="text-center pager-container">
+                		<div class="btn-group">
+                			<?php posts_nav_link(" "); ?>
+                	  </div>
+                	</div>
+                	
+                	<script>
+                		jQuery(document).ready(function($){
+                    		$(".pager-container a").addClass("btn btn-default");
+                		});
+                	</script>
+                	
                 <?php else: ?>
 
                     <?php get_404_template(); ?>

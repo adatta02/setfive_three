@@ -75,4 +75,20 @@ if( is_single() ){
 </div>
 <?php endif; ?>
 
-<div class="container">
+<div class="container search-container">
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<div class="col-md-5 col-md-offset-8">
+				
+				<form action="/" class="searchform form-inline" id="searchform" method="get" role="search">
+						<div class="input-group">      					
+						  <input type="search" id="s" class="form-control" name="s" value="" placeholder="Search...">
+						  <span class="input-group-btn">
+								<input class="btn btn-default" type="submit" value="Search" id="searchsubmit">
+						  </span>
+					 </div>				
+				</form>				
+				
+			</div>
+		</div>
+	</div>
