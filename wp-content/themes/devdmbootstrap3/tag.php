@@ -1,5 +1,5 @@
 <?php 
-$pageTitle = "Category: " . single_cat_title( '', false );
+$pageTitle = "#" . single_tag_title( '', false );
 get_header(); ?>
 
 <?php require_once "template-part-head.php" ?>
