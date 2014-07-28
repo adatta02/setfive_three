@@ -14,9 +14,8 @@ get_header(); ?>
 <?php get_template_part('template-part', 'topnav'); ?>
 
 <div class="row dmbs-content">
-    <div class="col-md-8 col-md-offset-2 dmbs-main">
-	
-	<div id="content" class="padded-content" role="main">
+    <div class="col-md-8 col-md-offset-2 dmbs-main">	
+			<div id="content" class="padded-content" role="main">
 		<?php 
 		if ( have_posts() ) :
 			the_post(); ?>
