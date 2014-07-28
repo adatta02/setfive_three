@@ -22,6 +22,12 @@
         </div>
 </div>
 
+<script>
+jQuery(document).ready(function($){
+	$(".pager-container a").addClass("btn btn-default");
+});
+</script>
+
 <?php wp_footer(); ?>
 </body>
 </html>

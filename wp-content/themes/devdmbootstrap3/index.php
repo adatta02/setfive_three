@@ -64,13 +64,7 @@
                 			<?php posts_nav_link(" "); ?>
                 	  </div>
                 	</div>
-                	
-                	<script>
-                		jQuery(document).ready(function($){
-                    		$(".pager-container a").addClass("btn btn-default");
-                		});
-                	</script>
-                	
+                	                	
                 <?php else: ?>
 
                     <?php get_404_template(); ?>

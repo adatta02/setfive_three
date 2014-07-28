@@ -26,7 +26,7 @@
         </div>
 </div>
 
-<?php if ( is_front_page() || is_single() ): ?>
+<?php if ( is_front_page() || is_single() || isset($pageTitle) ): ?>
 
 <?php 
 
@@ -45,6 +45,11 @@ if( is_single() ){
 		$credit = $credit[0];
 	}	
 }
+
+if( !isset($pageTitle) ){
+	$pageTitle = null;
+}
+
 ?>
 
 <div class="halfsize-slide-wrapper <?php echo $url && strpos($url, "white") !== false ? "white-image" : "" ?>" 
@@ -60,6 +65,10 @@ if( is_single() ){
                         
                         <?php if( is_single() ): ?>
                         	<h2><?php the_title(); ?></h2>
+                        <?php endif; ?>
+                        
+                        <?php if( $pageTitle ): ?>
+                        	<h2><?php echo $pageTitle; ?></h2>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -78,7 +87,7 @@ if( is_single() ){
 <div class="container search-container">
 	<div class="row">
 		<div class="col-md-10 col-md-offset-1">
-			<div class="col-md-5 col-md-offset-8">
+			<div class="col-md-5 col-md-offset-7">
 				
 				<form action="/" class="searchform form-inline" id="searchform" method="get" role="search">
 						<div class="input-group">      					
@@ -92,3 +101,6 @@ if( is_single() ){
 			</div>
 		</div>
 	</div>
+</div>
+
+<div class="container">
