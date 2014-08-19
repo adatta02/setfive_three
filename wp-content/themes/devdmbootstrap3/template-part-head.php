@@ -56,7 +56,7 @@ if( !isset($pageTitle) ){
 	style="<?php echo $url ? "background-image: url('" . $url . "')" : ""?>">
 	<div class="container">
             <div class="row">
-                <div class="col-md-8 col-md-offset-2">
+                <div class="col-md-10 col-md-offset-1">
                     <div class="slide-body-container text-center">
                     		<?php if ( is_front_page() ): ?>                  		
                         	<h2>Blog</h2>
