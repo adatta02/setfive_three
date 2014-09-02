@@ -18,6 +18,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="http://www.setfive.com/">Home</a></li>
                     <li><a href="http://www.setfive.com/case-studies">Case Studies</a></li>
+                    <li><a href="http://www.setfive.com/consulting">Consulting</a></li>
                     <li><a href="http://www.setfive.com/team">Team</a></li>
                     <li class="active"><a href="http://shout.setfive.com">Blog</a></li>
                     <li><a href="http://www.setfive.com/contact">Contact</a></li>

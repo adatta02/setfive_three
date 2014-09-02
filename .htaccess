@@ -9,9 +9,3 @@ RewriteRule . /index.php [L]
 </IfModule>
 
 # END WordPress
-AuthName "My Protected Area"
-AuthType Basic
-AuthUserFile /home/twitlabs/.htpasswd
-AuthGroupFile /dev/null
-require valid-user
-
