@@ -11,7 +11,6 @@
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Lato:400,700,900' rel='stylesheet' type='text/css'>
     
-   <link rel="stylesheet/less" type="text/css" href="<?php echo get_template_directory_uri() ?>/css/styles.less" />
-   <script src="<?php echo get_template_directory_uri() ?>/js/less.min.js"></script>    
+   <link rel="stylesheet" type="text/css" href="<?php echo get_template_directory_uri() ?>/css/styles.css" />       
 </head>
 <body <?php body_class(); ?>>

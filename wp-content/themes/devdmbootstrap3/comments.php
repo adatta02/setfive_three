@@ -2,8 +2,11 @@
     <div class="clear"></div>
     <div class="dmbs-comments">
     <a name="comments"></a>
+    
+    <?php if( 0 ): ?>
     <?php if ( have_comments() && comments_open() ) : ?>
-        <h4 id="comments"><?php comments_number(__('Leave a Comment','devdmbootstrap3'), __('One Comment','devdmbootstrap3'), '%' . __(' Comments','devdmbootstrap3') );?></h4>
+        <h4 id="comments">
+          <?php comments_number(__('Leave a Comment','devdmbootstrap3'), __('One Comment','devdmbootstrap3'), '%' . __(' Comments','devdmbootstrap3') );?></h4>
             <ul class="commentlist">
                 <?php wp_list_comments(); ?>
                 <?php paginate_comments_links(); ?>
@@ -16,5 +19,8 @@
            <?php
             endif;
     endif; ?>
+    
+    <?php endif; ?>
+    
     </div>
 <?php endif; ?>
