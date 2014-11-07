@@ -4,7 +4,7 @@ Plugin Name: Custom Permalinks
 Plugin URI: http://atastypixel.com/blog/wordpress/plugins/custom-permalinks/
 Donate link: http://atastypixel.com/blog/wordpress/plugins/custom-permalinks/
 Description: Set custom permalinks on a per-post basis
-Version: 0.7.16
+Version: 0.7.19
 Author: Michael Tyson
 Author URI: http://atastypixel.com/blog
 */
@@ -41,7 +41,7 @@ Author URI: http://atastypixel.com/blog
 function custom_permalinks_post_link($permalink, $post) {
 	$custom_permalink = get_post_meta( $post->ID, 'custom_permalink', true );
 	if ( $custom_permalink ) {
-		return get_home_url()."/".$custom_permalink;
+		return home_url()."/".$custom_permalink;
 	}
 	
 	return $permalink;
@@ -57,7 +57,7 @@ function custom_permalinks_post_link($permalink, $post) {
 function custom_permalinks_page_link($permalink, $page) {
 	$custom_permalink = get_post_meta( $page, 'custom_permalink', true );
 	if ( $custom_permalink ) {
-		return get_home_url()."/".$custom_permalink;
+		return home_url()."/".$custom_permalink;
 	}
 	
 	return $permalink;
@@ -77,7 +77,7 @@ function custom_permalinks_term_link($permalink, $term) {
 	$custom_permalink = custom_permalinks_permalink_for_term($term);
 	
 	if ( $custom_permalink ) {
-		return get_home_url()."/".$custom_permalink;
+		return home_url()."/".$custom_permalink;
 	}
 	
 	return $permalink;
@@ -131,7 +131,7 @@ function custom_permalinks_redirect() {
 		// Append any query compenent
 		$url .= strstr($_SERVER['REQUEST_URI'], "?");
 		
-		wp_redirect( get_home_url()."/".$url, 301 );
+		wp_redirect( home_url()."/".$url, 301 );
 		exit();
 	}	
 }
@@ -160,13 +160,21 @@ function custom_permalinks_request($query) {
 
 	if ( !$request ) return $query;
 	
-	$sql = "SELECT $wpdb->posts.ID, $wpdb->postmeta.meta_value, $wpdb->posts.post_type FROM $wpdb->posts  ".
-				"LEFT JOIN $wpdb->postmeta ON ($wpdb->posts.ID = $wpdb->postmeta.post_id) WHERE ".
-				"  meta_key = 'custom_permalink' AND ".
-				"  meta_value != '' AND ".
-				"  ( LOWER(meta_value) = LEFT(LOWER('".mysql_real_escape_string($request_noslash)."'), LENGTH(meta_value)) OR ".
-				"    LOWER(meta_value) = LEFT(LOWER('".mysql_real_escape_string($request_noslash."/")."'), LENGTH(meta_value)) ) ".
-				"ORDER BY LENGTH(meta_value) DESC LIMIT 1";
+	// Queries are now WP3.9 compatible (by Steve from Sowmedia.nl)
+    $sql = $wpdb->prepare("SELECT $wpdb->posts.ID, $wpdb->postmeta.meta_value, $wpdb->posts.post_type FROM $wpdb->posts  ".
+	            "LEFT JOIN $wpdb->postmeta ON ($wpdb->posts.ID = $wpdb->postmeta.post_id) WHERE ".
+	            "  meta_key = 'custom_permalink' AND ".
+	            "  meta_value != '' AND ".
+	            "  ( LOWER(meta_value) = LEFT(LOWER('%s'), LENGTH(meta_value)) OR ".
+	            "    LOWER(meta_value) = LEFT(LOWER('%s'), LENGTH(meta_value)) ) ".
+	            "  AND post_status != 'trash' AND post_type != 'nav_menu_item'".
+	            " ORDER BY LENGTH(meta_value) DESC, ".
+	            " FIELD(post_status,'publish','private','draft','auto-draft','inherit'),".
+	            " FIELD(post_type,'post','page'),".
+	            "$wpdb->posts.ID ASC  LIMIT 1",
+			$request_noslash,
+			$request_noslash."/"
+		    );
 
 	$posts = $wpdb->get_results($sql);
 
@@ -408,7 +416,7 @@ function custom_permalinks_form($permalink, $original="", $renderContainers=true
 		<th scope="row"><?php _e('Custom Permalink', 'custom-permalink') ?></th>
 		<td>
 	<?php endif; ?>
-			<?php echo get_home_url() ?>/
+			<?php echo home_url() ?>/
 			<input type="text" class="text" value="<?php echo htmlspecialchars($permalink ? urldecode($permalink) : urldecode($original)) ?>" 
 				style="width: 250px; <?php if ( !$permalink ) echo 'color: #ddd;' ?>"
 			 	onfocus="if ( this.style.color = '#ddd' ) { this.style.color = '#000'; }" 
@@ -507,7 +515,8 @@ function custom_permalinks_save_term($term, $permalink) {
  */
 function custom_permalinks_delete_permalink( $id ){
 	global $wpdb;
-	$wpdb->query("DELETE FROM $wpdb->postmeta WHERE `meta_key` = 'custom_permalink' AND `post_id` = '".mysql_real_escape_string($id)."'");
+	// Queries are now WP3.9 compatible (by Steve from Sowmedia.nl)
+	$wpdb->query($wpdb->prepare("DELETE FROM $wpdb->postmeta WHERE `meta_key` = 'custom_permalink' AND `post_id` = %d",$id));
 }
 
 /**
@@ -627,7 +636,7 @@ function custom_permalinks_admin_rows() {
 			$row = array();
 			$term = get_term($info['id'], ($info['kind'] == 'tag' ? 'post_tag' : 'category'));
 			$row['id'] = $info['kind'].'.'.$info['id'];
-			$row['permalink'] = get_home_url()."/".$permalink;
+			$row['permalink'] = home_url()."/".$permalink;
 			$row['type'] = ucwords($info['kind']);
 			$row['title'] = $term->name;
 			$row['editlink'] = ( $info['kind'] == 'tag' ? 'edit-tags.php?action=edit&taxonomy=post_tag&tag_ID='.$info['id'] : 'edit-tags.php?action=edit&taxonomy=category&tag_ID='.$info['id'] );
@@ -663,7 +672,7 @@ function custom_permalinks_admin_rows() {
 function custom_permalinks_original_post_link($post_id) {
 	remove_filter( 'post_link', 'custom_permalinks_post_link', 10, 2 ); // original hook
 	remove_filter( 'post_type_link', 'custom_permalinks_post_link', 10, 2 );
-	$originalPermalink = ltrim(str_replace(get_option('home'), '', get_permalink( $post_id )), '/');
+	$originalPermalink = ltrim(str_replace(home_url(), '', get_permalink( $post_id )), '/');
 	add_filter( 'post_link', 'custom_permalinks_post_link', 10, 2 ); // original hook
 	add_filter( 'post_type_link', 'custom_permalinks_post_link', 10, 2 );
 	return $originalPermalink;
@@ -678,7 +687,7 @@ function custom_permalinks_original_post_link($post_id) {
 function custom_permalinks_original_page_link($post_id) {
 	remove_filter( 'page_link', 'custom_permalinks_page_link', 10, 2 );
 	remove_filter( 'user_trailingslashit', 'custom_permalinks_trailingslash', 10, 2 );
-	$originalPermalink = ltrim(str_replace(get_home_url(), '', get_permalink( $post_id )), '/');
+	$originalPermalink = ltrim(str_replace(home_url(), '', get_permalink( $post_id )), '/');
 	add_filter( 'user_trailingslashit', 'custom_permalinks_trailingslash', 10, 2 );
 	add_filter( 'page_link', 'custom_permalinks_page_link', 10, 2 );
 	return $originalPermalink;
@@ -694,7 +703,7 @@ function custom_permalinks_original_page_link($post_id) {
 function custom_permalinks_original_tag_link($tag_id) {
 	remove_filter( 'tag_link', 'custom_permalinks_term_link', 10, 2 );
 	remove_filter( 'user_trailingslashit', 'custom_permalinks_trailingslash', 10, 2 );
-	$originalPermalink = ltrim(str_replace(get_home_url(), '', get_tag_link($tag_id)), '/');
+	$originalPermalink = ltrim(str_replace(home_url(), '', get_tag_link($tag_id)), '/');
 	add_filter( 'user_trailingslashit', 'custom_permalinks_trailingslash', 10, 2 );
 	add_filter( 'tag_link', 'custom_permalinks_term_link', 10, 2 );
 	return $originalPermalink;
@@ -709,7 +718,7 @@ function custom_permalinks_original_tag_link($tag_id) {
 function custom_permalinks_original_category_link($category_id) {
 	remove_filter( 'category_link', 'custom_permalinks_term_link', 10, 2 );
 	remove_filter( 'user_trailingslashit', 'custom_permalinks_trailingslash', 10, 2 );
-	$originalPermalink = ltrim(str_replace(get_home_url(), '', get_category_link($category_id)), '/');
+	$originalPermalink = ltrim(str_replace(home_url(), '', get_category_link($category_id)), '/');
 	add_filter( 'user_trailingslashit', 'custom_permalinks_trailingslash', 10, 2 );
 	add_filter( 'category_link', 'custom_permalinks_term_link', 10, 2 );
 	return $originalPermalink;
@@ -742,12 +751,6 @@ function custom_permalinks_setup_admin() {
 	add_management_page( 'Custom Permalinks', 'Custom Permalinks', 5, 'custom_permalinks', 'custom_permalinks_options_page' );
 	if ( is_admin() )
 		wp_enqueue_script('admin-forms');
-}
-
-if ( !function_exists("get_home_url") ) {
-    function get_home_url() {
-        return get_option('home');
-    }
 }
 
 # Check whether we're running within the WP environment, to avoid showing errors like

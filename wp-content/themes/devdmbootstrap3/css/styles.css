@@ -656,3 +656,13 @@ blockquote p {
   padding-bottom: 10px;
   line-height: 24px;
 }
+.link-container {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.link-container img {
+  max-width: 100%;
+}
+.link-container h3 {
+  margin-top: 0px;
+}

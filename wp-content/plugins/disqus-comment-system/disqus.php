@@ -4,7 +4,7 @@ Plugin Name: Disqus Comment System
 Plugin URI: http://disqus.com/
 Description: The Disqus comment system replaces your WordPress comment system with your comments hosted and powered by Disqus. Head over to the Comments admin page to set up your DISQUS Comment System.
 Author: Disqus <team@disqus.com>
-Version: 2.74
+Version: 2.79
 Author URI: http://disqus.com/
 */
 
@@ -21,7 +21,7 @@ if (defined('DISQUS_LOCAL')) { // DISQUS defines this for local development purp
     define('DISQUS_IMPORTER_URL',   'http://dev.disqus.org:8001/');
 } else {
     define('DISQUS_DOMAIN',         'disqus.com');
-    define('DISQUS_IMPORTER_URL',   'http://import.disqus.com/');
+    define('DISQUS_IMPORTER_URL',   'https://import.disqus.com/');
 }
 define('DISQUS_URL',                'http://' . DISQUS_DOMAIN . '/');
 define('DISQUS_MEDIA_URL',          'http://' . DISQUS_DOMAIN . '/media/');
@@ -31,7 +31,7 @@ define('DISQUS_CAN_EXPORT',         is_file(dirname(__FILE__) . '/export.php'));
 if (!defined('DISQUS_DEBUG')) {
     define('DISQUS_DEBUG',          false);
 }
-define('DISQUS_VERSION',            '2.74');
+define('DISQUS_VERSION',            '2.79');
 define('DISQUS_SYNC_TIMEOUT',       30);
 
 /**
@@ -54,7 +54,6 @@ function dsq_options() {
         'disqus_public_key',
         'disqus_secret_key',
         'disqus_sso_button',
-        'disqus_sso_icon',
         # disables automatic sync via cron
         'disqus_manual_sync',
         # disables server side rendering
@@ -85,14 +84,9 @@ function dsq_plugin_basename($file) {
     return !empty($pieces[count($pieces)-1]) ? $pieces[count($pieces)-1] : $pieces[count($pieces)-2];
 }
 
-if ( !defined('WP_CONTENT_URL') ) {
-    define('WP_CONTENT_URL', get_option('siteurl') . '/wp-content');
-}
 if ( !defined('PLUGINDIR') ) {
     define('PLUGINDIR', 'wp-content/plugins'); // Relative to ABSPATH.  For back compat.
 }
-
-define('DSQ_PLUGIN_URL', WP_CONTENT_URL . '/plugins/' . dsq_plugin_basename(__FILE__));
 
 $mt_disqus_version = '2.01';
 /**
@@ -149,6 +143,7 @@ function dsq_can_replace() {
     $replace = get_option('disqus_replace');
 
     if ( is_feed() )                       { return false; }
+    if ( !isset($post) )                   { return false; }
     if ( 'draft' == $post->post_status )   { return false; }
     if ( !get_option('disqus_forum_url') ) { return false; }
     else if ( 'all' == $replace )          { return true; }
@@ -282,7 +277,7 @@ function dsq_sync_comments($comments) {
 
         // and follow up using legacy Disqus agent
         if (!$commentdata) {
-            $commentdata = $wpdb->get_row($wpdb->prepare( "SELECT comment_ID, comment_parent FROM $wpdb->comments WHERE comment_agent = 'Disqus/1.0:{$comment->id}' LIMIT 1"), ARRAY_A);
+            $commentdata = $wpdb->get_row($wpdb->prepare( "SELECT comment_ID, comment_parent FROM $wpdb->comments WHERE comment_agent = %s LIMIT 1", 'Disqus/1.0:'.$comment->id), ARRAY_A);
         }
         if (!$commentdata) {
             // Comment doesnt exist yet, lets insert it
@@ -339,7 +334,7 @@ function dsq_sync_comments($comments) {
                 echo "inserted {$comment->id}: id is {$commentdata[comment_ID]}\n";
             }
         }
-        if (!$commentdata['comment_parent'] && $comment->parent_post) {
+        if ((isset($commentdata['comment_parent']) && !$commentdata['comment_parent']) && $comment->parent_post) {
             $parent_id = $wpdb->get_var($wpdb->prepare( "SELECT comment_id FROM $wpdb->commentmeta WHERE meta_key = 'dsq_post_id' AND meta_value = %s LIMIT 1", $comment->parent_post));
             if ($parent_id) {
                 $wpdb->query($wpdb->prepare( "UPDATE $wpdb->comments SET comment_parent = %s WHERE comment_id = %s", $parent_id, $commentdata['comment_ID']));
@@ -420,55 +415,67 @@ function dsq_request_handler() {
                 if (current_user_can('manage_options') && DISQUS_CAN_EXPORT) {
                     $timestamp = intval($_GET['timestamp']);
                     $post_id = intval($_GET['post_id']);
-                    global $wpdb, $dsq_api;
-                    $post = $wpdb->get_results($wpdb->prepare("
-                        SELECT *
-                        FROM $wpdb->posts
-                        WHERE post_type != 'revision'
-                        AND post_status = 'publish'
-                        AND comment_count > 0
-                        AND ID > %d
-                        ORDER BY ID ASC
-                        LIMIT 1
-                    ", $post_id));
-                    $post = $post[0];
-                    $post_id = $post->ID;
-                    $max_post_id = $wpdb->get_var($wpdb->prepare("
-                        SELECT MAX(ID)
-                        FROM $wpdb->posts
-                        WHERE post_type != 'revision'
-                        AND post_status = 'publish'
-                        AND comment_count > 0
-                    ", $post_id));
-                    $eof = (int)($post_id == $max_post_id);
-                    if ($eof) {
-                        $status = 'complete';
-                        $msg = dsq_i('Your comments have been sent to Disqus and queued for import!<br/><a href="'.DISQUS_IMPORTER_URL.'" target="_blank">See the status of your import at Disqus</a>');
+                    if ( isset($_GET['_dsqexport_wpnonce']) === false ) {
+                        $msg = dsq_i('Unable to export comments. Make sure you are accessing this page from the Wordpress dashboard.');
+                        $result = 'fail';
+                        $response = null;
                     }
                     else {
-                        $status = 'partial';
-                        $msg = dsq_i('Processed comments on post #%s&hellip;', $post_id);
-                    }
-                    $result = 'fail';
-                    $response = null;
-                    if ($post) {
-                        require_once(dirname(__FILE__) . '/export.php');
-                        $wxr = dsq_export_wp($post);
-                        $response = $dsq_api->import_wordpress_comments($wxr, $timestamp, $eof);
-                        if (!($response['group_id'] > 0)) {
-                            $result = 'fail';
-                            $msg = '<p class="status dsq-export-fail">'. dsq_i('Sorry, something unexpected happened with the export. Please <a href="#" id="dsq_export_retry">try again</a></p><p>If your API key has changed, you may need to reinstall Disqus (deactivate the plugin and then reactivate it). If you are still having issues, refer to the <a href="%s" onclick="window.open(this.href); return false">WordPress help page</a>.', 'http://disqus.com/help/wordpress'). '</p>';
-                            $response = $dsq_api->get_last_error();
+
+                        // Check nonce
+                        check_admin_referer('dsq-wpnonce_export', '_dsqexport_wpnonce');
+
+                        global $wpdb, $dsq_api;
+                        $post = $wpdb->get_results($wpdb->prepare("
+                            SELECT *
+                            FROM $wpdb->posts
+                            WHERE post_type != 'revision'
+                            AND post_status = 'publish'
+                            AND comment_count > 0
+                            AND ID > %d
+                            ORDER BY ID ASC
+                            LIMIT 1
+                        ", $post_id));
+                        $post = $post[0];
+                        $post_id = $post->ID;
+                        $max_post_id = $wpdb->get_var($wpdb->prepare("
+                            SELECT MAX(%d)
+                            FROM $wpdb->posts
+                            WHERE post_type != 'revision'
+                            AND post_status = 'publish'
+                            AND comment_count > 0
+                        ", $post_id));
+                        $eof = (int)($post_id == $max_post_id);
+                        if ($eof) {
+                            $status = 'complete';
+                            $msg = dsq_i('Your comments have been sent to Disqus and queued for import!<br/><a href="'.DISQUS_IMPORTER_URL.'" target="_blank">See the status of your import at Disqus</a>');
                         }
                         else {
-                            if ($eof) {
-                                $msg = dsq_i('Your comments have been sent to Disqus and queued for import!<br/><a href="%s" target="_blank">See the status of your import at Disqus</a>', $response['link']);
-
+                            $status = 'partial';
+                            $msg = dsq_i('Processed comments on post #%s&hellip;', $post_id);
+                        }
+                        $result = 'fail';
+                        $response = null;
+                        if ($post) {
+                            require_once(dirname(__FILE__) . '/export.php');
+                            $wxr = dsq_export_wp($post);
+                            $response = $dsq_api->import_wordpress_comments($wxr, $timestamp, $eof);
+                            if (!($response['group_id'] > 0)) {
+                                $result = 'fail';
+                                $msg = '<p class="status dsq-export-fail">'. dsq_i('Sorry, something unexpected happened with the export. Please try again.</p><p>If your API key has changed, you may need to reinstall Disqus (deactivate the plugin and then reactivate it). If you are still having issues, refer to the <a href="%s" onclick="window.open(this.href); return false">WordPress help page</a>.', 'http://disqus.com/help/wordpress'). '</p>';
+                                $response = $dsq_api->get_last_error();
                             }
-                            $result = 'success';
+                            else {
+                                if ($eof) {
+                                    $msg = dsq_i('Your comments have been sent to Disqus and queued for import!<br/><a href="%s" target="_blank">See the status of your import at Disqus</a>', $response['link']);
+
+                                }
+                                $result = 'success';
+                            }
                         }
                     }
-// send AJAX response
+                    
+                    // send AJAX response
                     $response = compact('result', 'timestamp', 'status', 'post_id', 'msg', 'eof', 'response');
                     header('Content-type: text/javascript');
                     echo cf_json_encode($response);
@@ -477,38 +484,49 @@ function dsq_request_handler() {
             break;
             case 'import_comments':
                 if (current_user_can('manage_options')) {
-                    if (!isset($_GET['last_comment_id'])) $last_comment_id = false;
-                    else $last_comment_id = $_GET['last_comment_id'];
-
-                    if ($_GET['wipe'] == '1') {
-                        $wpdb->query("DELETE FROM `".$wpdb->prefix."commentmeta` WHERE meta_key IN ('dsq_post_id', 'dsq_parent_post_id')");
-                        $wpdb->query("DELETE FROM `".$wpdb->prefix."comments` WHERE comment_agent LIKE 'Disqus/%%'");
-                    }
-
-                    ob_start();
-                    $response = dsq_sync_forum($last_comment_id, true);
-                    $debug = ob_get_clean();
-                    if (!$response) {
-                        $status = 'error';
+                    if ( isset($_GET['_dsqimport_wpnonce']) === false ) {
+                        $msg = dsq_i('Unable to import comments. Make sure you are accessing this page from the Wordpress dashboard.');
                         $result = 'fail';
-                        $error = $dsq_api->get_last_error();
-                        $msg = '<p class="status dsq-export-fail">'.dsq_i('There was an error downloading your comments from Disqus.').'<br/>'.htmlspecialchars($error).'</p>';
-                    } else {
-                        list($comments, $last_comment_id) = $response;
-                        if (!$comments) {
-                            $status = 'complete';
-                            $msg = dsq_i('Your comments have been downloaded from Disqus and saved in your local database.');
-                        } else {
-                            $status = 'partial';
-                            $msg = dsq_i('Import in progress (last post id: %s) &hellip;', $last_comment_id);
-                        }
-                        $result = 'success';
+                        $response = null;
                     }
-                    $debug = explode("\n", $debug);
-                    $response = compact('result', 'status', 'comments', 'msg', 'last_comment_id', 'debug');
-                    header('Content-type: text/javascript');
-                    echo cf_json_encode($response);
-                    die();
+                    else
+                    {
+                        // Check nonce
+                        check_admin_referer('dsq-wpnonce_import', '_dsqimport_wpnonce');
+
+                        if (!isset($_GET['last_comment_id'])) $last_comment_id = false;
+                        else $last_comment_id = $_GET['last_comment_id'];
+
+                        if ($_GET['wipe'] == '1') {
+                            $wpdb->query("DELETE FROM `".$wpdb->prefix."commentmeta` WHERE meta_key IN ('dsq_post_id', 'dsq_parent_post_id')");
+                            $wpdb->query("DELETE FROM `".$wpdb->prefix."comments` WHERE comment_agent LIKE 'Disqus/%%'");
+                        }
+
+                        ob_start();
+                        $response = dsq_sync_forum($last_comment_id, true);
+                        $debug = ob_get_clean();
+                        if (!$response) {
+                            $status = 'error';
+                            $result = 'fail';
+                            $error = $dsq_api->get_last_error();
+                            $msg = '<p class="status dsq-export-fail">'.dsq_i('There was an error downloading your comments from Disqus.').'<br/>'.htmlspecialchars($error).'</p>';
+                        } else {
+                            list($comments, $last_comment_id) = $response;
+                            if (!$comments) {
+                                $status = 'complete';
+                                $msg = dsq_i('Your comments have been downloaded from Disqus and saved in your local database.');
+                            } else {
+                                $status = 'partial';
+                                $msg = dsq_i('Import in progress (last post id: %s) &hellip;', $last_comment_id);
+                            }
+                            $result = 'success';
+                        }
+                        $debug = explode("\n", $debug);
+                        $response = compact('result', 'status', 'comments', 'msg', 'last_comment_id', 'debug');
+                        header('Content-type: text/javascript');
+                        echo cf_json_encode($response);
+                        die();
+                    }
                 }
             break;
         }
@@ -861,7 +879,7 @@ function dsq_comments_text($comment_text) {
 
 function dsq_bloginfo_url($url) {
     if ( get_feed_link('comments_rss2') == $url && dsq_can_replace() ) {
-        return 'http://' . strtolower(get_option('disqus_forum_url')) . '.' . DISQUS_DOMAIN . DISQUS_RSS_PATH;
+        return 'https://' . strtolower(get_option('disqus_forum_url')) . '.' . DISQUS_DOMAIN . DISQUS_RSS_PATH;
     } else {
         return $url;
     }
@@ -967,7 +985,7 @@ function dsq_manage() {
         dsq_install();
     }
 
-    if (dsq_does_need_update() && isset($_POST['reset'])) {
+    if (dsq_does_need_update() && !isset($_POST['reset'])) {
         include_once(dirname(__FILE__) . '/upgrade.php');
     } else {
         include_once(dirname(__FILE__) . '/manage.php');
@@ -977,7 +995,7 @@ function dsq_manage() {
 function dsq_admin_head() {
     if (isset($_GET['page']) && $_GET['page'] == 'disqus') {
 ?>
-<link rel='stylesheet' href='<?php echo DSQ_PLUGIN_URL; ?>/media/styles/manage.css' type='text/css' />
+<link rel='stylesheet' href='<?php echo plugins_url( 'media/styles/manage.css', __FILE__ ); ?>' type='text/css' />
 <style type="text/css">
 .dsq-importing, .dsq-imported, .dsq-import-fail, .dsq-exporting, .dsq-exported, .dsq-export-fail {
     background: url(<?php echo admin_url('images/loading.gif'); ?>) left center no-repeat;
@@ -1010,97 +1028,107 @@ jQuery(function($) {
     dsq_fire_export();
     dsq_fire_import();
 });
-dsq_fire_export = function() {
-    var $ = jQuery;
-    $('#dsq_export a.button, #dsq_export_retry').unbind().click(function() {
-        $('#dsq_export').html('<p class="status"></p>');
-        $('#dsq_export .status').removeClass('dsq-export-fail').addClass('dsq-exporting').html('Processing...');
-        dsq_export_comments();
-        return false;
+
+var dsq_fire_export = function() {
+    jQuery(function($) {
+        $('#dsq_export a.button').unbind().click(function() {
+            $('#dsq_export .status').removeClass('dsq-export-fail').addClass('dsq-exporting').html('Processing...');
+            dsq_export_comments();
+            return false;
+        });
     });
-}
-dsq_export_comments = function() {
-    var $ = jQuery;
-    var status = $('#dsq_export .status');
-    var export_info = (status.attr('rel') || '0|' + (new Date().getTime()/1000)).split('|');
-    $.get(
-        '<?php echo admin_url('index.php'); ?>',
-        {
-            cf_action: 'export_comments',
-            post_id: export_info[0],
-            timestamp: export_info[1]
-        },
-        function(response) {
-            switch (response.result) {
-                case 'success':
-                    status.html(response.msg).attr('rel', response.post_id + '|' + response.timestamp);
-                    switch (response.status) {
-                        case 'partial':
-                            dsq_export_comments();
+};
+
+var dsq_export_comments = function() {
+    jQuery(function($) {
+        var status = $('#dsq_export .status');
+        var nonce = $('#dsq-form_nonce_export').val();
+        var export_info = (status.attr('rel') || '0|' + (new Date().getTime()/1000)).split('|');        
+        $.get(
+            '<?php echo admin_url("index.php"); ?>',
+            {
+                cf_action: 'export_comments',
+                post_id: export_info[0],
+                timestamp: export_info[1],
+                _dsqexport_wpnonce: nonce
+            },
+            function(response) {
+                switch (response.result) {
+                    case 'success':
+                        status.html(response.msg).attr('rel', response.post_id + '|' + response.timestamp);
+                        switch (response.status) {
+                            case 'partial':
+                                dsq_export_comments();
                             break;
-                        case 'complete':
-                            status.removeClass('dsq-exporting').addClass('dsq-exported');
+                            case 'complete':
+                                status.removeClass('dsq-exporting').addClass('dsq-exported');
                             break;
-                    }
-                break;
-                case 'fail':
-                    status.parent().html(response.msg);
-                    dsq_fire_export();
-                break;
-            }
-        },
-        'json'
-    );
-}
-dsq_fire_import = function() {
+                        }
+                    break;
+                    case 'fail':
+                        status.parent().html(response.msg);
+                        dsq_fire_export();
+                    break;
+                }
+            },
+            'json'
+        );
+    });
+};
+
+var dsq_fire_import = function() {
     var $ = jQuery;
     $('#dsq_import a.button, #dsq_import_retry').unbind().click(function() {
         var wipe = $('#dsq_import_wipe').is(':checked');
-        $('#dsq_import').html('<p class="status"></p>');
         $('#dsq_import .status').removeClass('dsq-import-fail').addClass('dsq-importing').html('Processing...');
         dsq_import_comments(wipe);
         return false;
     });
-}
-dsq_import_comments = function(wipe) {
-    var $ = jQuery;
-    var status = $('#dsq_import .status');
-    var last_comment_id = status.attr('rel') || '0';
-    $.get(
-        '<?php echo admin_url('index.php'); ?>',
-        {
-            cf_action: 'import_comments',
-            last_comment_id: last_comment_id,
-            wipe: (wipe ? 1 : 0)
-        },
-        function(response) {
-            switch (response.result) {
-                case 'success':
-                    status.html(response.msg).attr('rel', response.last_comment_id);
-                    switch (response.status) {
-                        case 'partial':
-                            dsq_import_comments(false);
-                            break;
-                        case 'complete':
-                            status.removeClass('dsq-importing').addClass('dsq-imported');
-                            break;
-                    }
-                break;
-                case 'fail':
-                    status.parent().html(response.msg);
-                    dsq_fire_import();
-                break;
-            }
-        },
-        'json'
-    );
-}
+};
+
+var dsq_import_comments = function(wipe) {
+    jQuery(function($) {
+        var status = $('#dsq_import .status');
+        var nonce = $('#dsq-form_nonce_import').val();
+        var last_comment_id = status.attr('rel') || '0';
+        $.get(
+            '<?php echo admin_url('index.php'); ?>',
+            {
+                cf_action: 'import_comments',
+                last_comment_id: last_comment_id,
+                wipe: (wipe ? 1 : 0),
+                _dsqimport_wpnonce: nonce
+            },
+            function(response) {
+                switch (response.result) {
+                    case 'success':
+                        status.html(response.msg).attr('rel', response.last_comment_id);
+                        switch (response.status) {
+                            case 'partial':
+                                dsq_import_comments(false);
+                                break;
+                            case 'complete':
+                                status.removeClass('dsq-importing').addClass('dsq-imported');
+                                break;
+                        }
+                    break;
+                    case 'fail':
+                        status.parent().html(response.msg);
+                        dsq_fire_import();
+                    break;
+                }
+            },
+            'json'
+        );
+    });
+};
+
 </script>
 <?php
 // HACK: Our own styles for older versions of WordPress.
         global $wp_version;
         if ( version_compare($wp_version, '2.5', '<') ) {
-            echo "<link rel='stylesheet' href='" . DSQ_PLUGIN_URL . "/media/styles/manage-pre25.css' type='text/css' />";
+            echo "<link rel='stylesheet' href='" . plugins_url( 'media/styles/manage-pre25.css', __FILE__ ) . "' type='text/css' />";
         }
     }
 }
@@ -1193,7 +1221,7 @@ function dsq_output_loop_comment_js($post_ids = null) {
             }
             var s = document.createElement('script'); s.async = true;
             s.type = 'text/javascript';
-            s.src = '//' + '<?php echo DISQUS_DOMAIN; ?>/forums/' + disqus_shortname + '/count.js';
+            s.src = '//' + disqus_shortname + '.<?php echo DISQUS_DOMAIN; ?>/count.js';
             (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
         }());
     //]]>
@@ -1215,14 +1243,14 @@ function dsq_output_footer_comment_js() {
                 if (nodes[i].className.indexOf('dsq-postid') != -1) {
                     nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('rel'));
                     url = nodes[i].parentNode.href.split('#', 1);
-                    if (url.length == 1) url = url[0];
-                    else url = url[1]
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
                     nodes[i].parentNode.href = url + '#disqus_thread';
                 }
             }
             var s = document.createElement('script'); s.async = true;
             s.type = 'text/javascript';
-            s.src = '//' + '<?php echo DISQUS_DOMAIN; ?>/forums/' + disqus_shortname + '/count.js';
+            s.src = '//' + disqus_shortname + '.<?php echo DISQUS_DOMAIN; ?>/count.js';
             (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
         }());
     //]]>
@@ -1236,8 +1264,8 @@ add_action('wp_footer', 'dsq_output_footer_comment_js');
 $dsq_prev_permalinks = array();
 
 function dsq_prev_permalink($post_id) {
-// if post not published, return
-    $post = &get_post($post_id);
+    $post = get_post($post_id);
+    // if post not published, return
     if ($post->post_status != 'publish') {
         return;
     }
@@ -1402,11 +1430,9 @@ function dsq_sso_login() {
     $sitename = get_bloginfo('name');
     $siteurl = site_url();
     $button = get_option('disqus_sso_button');
-    $icon = get_option('disqus_sso_icon');
     $sso_login_str = 'this.sso = {
-          name: "'.$sitename.'",
+          name: "'.wp_specialchars_decode($sitename, ENT_QUOTES).'",
           button: "'.$button.'",
-          icon: "'.$icon.'",
           url: "'.$siteurl.'/wp-login.php",
           logout: "'.$siteurl.'/wp-login.php?action=logout",
           width: "800",
@@ -1482,9 +1508,9 @@ function dsq_install($allow_database_install=true) {
 
     // if this is a new install, we should not set disqus active
     if ($version == '0') {
-        add_option('disqus_active', 0);
+        add_option('disqus_active', '0');
     } else {
-        add_option('disqus_active', 1);
+        add_option('disqus_active', '1');
     }
 
     update_option('disqus_version', DISQUS_VERSION);
