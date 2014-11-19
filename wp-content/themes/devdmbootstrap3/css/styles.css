@@ -648,11 +648,13 @@ div.navbar-inverse .logo {
 blockquote p {
   line-height: 28px;
 }
-.post ul {
+.post ul,
+.post ol {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-.post ul li {
+.post ul li,
+.post ol li {
   padding-bottom: 10px;
   line-height: 24px;
 }
